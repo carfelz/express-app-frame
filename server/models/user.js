@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema
-.virtual(password)
+.virtual('password')
 .set(function(password){
     this._password = password
     this.salt = this.makeSalt()

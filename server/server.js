@@ -1,7 +1,10 @@
 import config from './../config/config'
 import app from './express'
 import mongoose from 'mongoose'
+import routes from './routes/routes'
 
+
+app.use('/', routes)
 
 app.listen(config.port, (err)=>{
     if (err) {
