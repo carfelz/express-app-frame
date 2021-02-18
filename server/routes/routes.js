@@ -1,17 +1,25 @@
 import express from 'express'
 import controllers from '../controllers/user'
+import auth from '../controllers/auth'
 
-const user = express.Router();
+const router = express.Router();
 
-user.route('/api/users')
+
+router.route('/api/users')
 .get(controllers.get)
 .post(controllers.create)
 
-user.route('/api/users/:userId')
+router.route('/api/users/:userId')
 .get(controllers.read)
 .put(controllers.update)
 .delete(controllers.deletes)
 
-user.param('userId', controllers.getById)
+router.route('/auth/signin')
+.post(auth.signin)
 
-export default user
+router.route('/auth/signout')
+.get(auth.signout)
+
+router.param('userId', controllers.getById)
+
+export default router
