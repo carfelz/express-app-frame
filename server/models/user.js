@@ -14,15 +14,15 @@ const UserSchema = new mongoose.Schema({
         match: [/.+\@.+\..+/, 'Please fill a valid email address'],
         required: 'Email is required'
     },
+    hash_pass:{
+        type: String,
+        required: 'Password is required'
+    },
     created:{
         type: Date,
         default: Date.now
     },
     updated: Date,
-    hash_pass:{
-        type: String,
-        required: 'Password is required'
-    },
     salt: String,
 })
 
@@ -37,9 +37,18 @@ UserSchema
     return this._password
 })
 
+UserSchema.path('hash_pass').validate(function(v){
+    if(this._password && this._password.length < 8){
+        this.invalidate('password', 'Password must be at least 8 characters.')
+    }
+    if(this.isNew && !this._password){
+        this.invalidate('password', 'Password is not required')
+    }
+}, null)
+
 UserSchema.methods = {
     authenticate: function(plaintext) {
-        return this.encryptPassword(plaintext) === this.hashed_password
+        return this.encryptPassword(plaintext) === this.hash_pass
     },
     encryptPassword: function(password){
         if(!password) return ''
@@ -47,7 +56,7 @@ UserSchema.methods = {
             return crypto
             .createHmac('sha1', this.salt) 
             .update(password)
-            .disgest('hex')
+            .digest('hex')
         }catch(err){
             return ''
         }
@@ -56,13 +65,4 @@ UserSchema.methods = {
         return Math.round((new Date().valueOf() * Math.random())) + ''
     }
 }
-UserSchema.path('hash_pass').validate(function(){
-    if(this._password && this._password.length < 8){
-        this.invalidate('password', 'Password must be at least 8 characters.')
-    }
-    if(this.isNew && !this._password){
-        this.invalidate('password', 'Password is required')
-    }
-}, null)
-
 export default mongoose.model('user', UserSchema);

@@ -8,14 +8,18 @@ const create = async(req, res) =>{
 
     try{
         await user.save()
+        console.log('created');
         return res.status(200).json({
             message: "Successfully signed up"
         })
+        
     }catch(err){
+        console.log('not created');
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
         })
     }
+    
 }
 
 //gets all users

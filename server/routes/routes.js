@@ -10,9 +10,9 @@ router.route('/api/users')
 .post(controllers.create)
 
 router.route('/api/users/:userId')
-.get(controllers.read)
-.put(controllers.update)
-.delete(controllers.deletes)
+.get( auth.requireSignin, controllers.read)
+.put(auth.requireSignin, controllers.update)
+.delete(auth.requireSignin,controllers.deletes)
 
 router.route('/auth/signin')
 .post(auth.signin)

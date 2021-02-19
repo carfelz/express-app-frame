@@ -3,9 +3,7 @@ import jwt from 'jsonwebtoken'
 import expressToken from 'express-jwt'
 import config from '../../config/config'
 
-const auth = [];
-
-auth.signin = async (req, res) =>{
+const signin = async (req, res) =>{
     try {
         let user = await User.findOne({"email": req.body.email})
         if(!user){
@@ -34,7 +32,7 @@ auth.signin = async (req, res) =>{
     }
 }
 
-auth.signout = (req, res) =>{
+const signout = (req, res) =>{
     res.clearCookies('t')
     console.log('signed out')
     return res.status('200').json({
@@ -42,12 +40,25 @@ auth.signout = (req, res) =>{
     })
 }
 
-auth.requireSignin = (req, res) =>{
+const requireSignin = expressToken({
+    secret: config.jwtSecret,
+    userProperty: 'auth',
+    algorithms: ['HS256']
+})
 
+const hasAuthorization = (req, res, next) =>{
+    const authorized = req.profile && req.auth && req.profile._id == req.auth._id
+    if(!(authorized)){
+        return res.status('403').json({
+            error: "User is not authorized"
+        })
+    }
+    next();
 }
 
-auth.hasAuthorization = (req, res) =>{
-
+export default {
+    signin,
+    signout,
+    requireSignin,
+    hasAuthorization
 }
-
-export default auth
