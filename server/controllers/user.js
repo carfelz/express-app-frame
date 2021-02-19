@@ -25,7 +25,7 @@ const create = async(req, res) =>{
 //gets all users
 const get = async (req, res) =>{
     try {
-        let users = await User.find().select('name email created updated')
+        let users = await User.find()
         res.json(users)
     } catch (error) {
         return res.status(400).json({
@@ -42,7 +42,7 @@ const getById = async (req, res, next, id) => {
             return res.status('400').json({
                 error: "User not found"
               })
-        }
+        } 
         req.profile = user;
         next();
     } catch (error) {
@@ -50,17 +50,19 @@ const getById = async (req, res, next, id) => {
             error: "Could not retrieve user"
           })
     }
-}
+} 
 
 //get user w/out sensitive info
-const read = async (res, req) =>{
-    req.profile.hashed_password = undefined
+const read = async (req, res) =>{
+    let user = req.profile
+    user = [...res.body]
+    req.profile.hash_pass = undefined
     req.profile.salt = undefined
-    return res.json(req.profile)
+    return res.json(user)
 }
 
 //updates
-const update = async(res, req) =>{
+const update = async(req, res) =>{
     try {
         let user = req.profile
         user = extend(user, req.body)
@@ -77,7 +79,7 @@ const update = async(res, req) =>{
 }
 
 //deletes
-const deletes = async(res, req) =>{
+const deletes = async(req, res) =>{
     try {
         let user = req.profile
         let deletedUser = await user.remove()

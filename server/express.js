@@ -13,19 +13,19 @@ import devBundle from './devBundle'
 const app = express()
 devBundle.compile(app);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(cookieParser())
-app.use(compress())
-app.use(helmet())
-app.use(cors())
-
 app.use('/', routes)
 
 
 app.get('/', (req, res) =>{
     res.status(200).send(template())
 })
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser())
+app.use(compress())
+app.use(helmet())
+app.use(cors())
 
 app.use( (err, req, res, next)=>{
     if(err.name === 'UnauthorizedError'){
