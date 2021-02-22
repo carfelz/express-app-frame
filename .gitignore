@@ -12,6 +12,9 @@
 # Icon must end with two \r
 Icon
 
+/dist/
+/data/
+npm-debug.log
 
 # Thumbnails
 ._*
