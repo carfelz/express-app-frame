@@ -9,12 +9,10 @@ import template from '../template';
 import routes from './routes/routes'
 import devBundle from './devBundle'
 
-
 const app = express()
 devBundle.compile(app);
 
 app.use('/', routes)
-
 
 app.get('/', (req, res) =>{
     res.status(200).send(template())
@@ -26,6 +24,9 @@ app.use(cookieParser())
 app.use(compress())
 app.use(helmet())
 app.use(cors())
+
+let cwd = process.cwd()
+app.use('/dist', express.static(path.join(cwd, '/dist')))
 
 app.use( (err, req, res, next)=>{
     if(err.name === 'UnauthorizedError'){

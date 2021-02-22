@@ -7,7 +7,7 @@ import webpackConfig from '../webpack.config.client'
 const compile = (app) =>{
     if(config.env === "development"){
         const compiler = webpack(webpackConfig)
-        const middleware = webpackHotMiddleWare(compiler, {
+        const middleware = webpackMiddleWare(compiler, {
             publickPath: webpackConfig.output.publicPath
         })
         app.use(middleware)
